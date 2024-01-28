@@ -305,4 +305,29 @@ function displayIngredients(data) {
   rowData.innerHTML = container;
 }
 
-function getIngredientsMealsDetails() {}
+async function getIngredientsMealsDetails(ingredients) {
+  rowData.innerHTML = "";
+  let response = await fetch(
+    `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredients}`
+  );
+  let data = await response.json();
+
+  displayMeals(data.meals.slice(0, 20));
+}
+/*----------------------------------------------------------------------*/
+// Contacts Menu
+function showContacts() {
+  closeSideNav();
+  rowData.innerHTML = `
+  <div class="contacts min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="container w-75 text-center">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <input id="nameInput" oninput="inputsValidation()" type="text" class="form-control"
+                    placeholder="Enter Your Name">
+            </div>
+        </div>
+    </div>
+</div>
+  `;
+}
