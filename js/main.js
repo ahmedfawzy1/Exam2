@@ -272,7 +272,6 @@ async function getAreaMeals(area) {
   );
   let data = await response.json();
 
-  console.log(data.meals);
   displayMeals(data.meals.slice(0, 20));
 }
 
@@ -285,19 +284,28 @@ async function getIngredients() {
   );
   let data = await response.json();
 
-  displayIngredients(data.meals);
+  displayIngredients(data.meals.slice(0, 20));
+}
+
+function truncWords(text, maxwords) {
+  if (text !== undefined && text !== null) {
+    const words = text.split(" ");
+    let shortWords = words.slice(0, maxwords);
+    return shortWords.join(" ");
+  }
 }
 
 function displayIngredients(data) {
   closeSideNav();
   let container = "";
   for (let i = 0; i < data.length; i++) {
+    const shortDes = truncWords(data[i].strDescription, 20);
     container += `
     <div class="col-md-3">
     <div onclick="getIngredientsMealsDetails('${data[i].strIngredient}')" class="rounded-2 text-center cursor-pointer">
         <i class="fa-solid fa-drumstick-bite fa-4x"></i>
         <h3>${data[i].strIngredient}</h3>
-        <p>${data[i].strDescription}</p>
+        <p>${shortDes}</p>
     </div>
 </div>
       `;
@@ -314,8 +322,7 @@ async function getIngredientsMealsDetails(ingredients) {
 
   displayMeals(data.meals.slice(0, 20));
 }
-/*----------------------------------------------------------------------*/
-// Contacts Menu
+
 function showContacts() {
   closeSideNav();
   rowData.innerHTML = `
@@ -325,9 +332,183 @@ function showContacts() {
             <div class="col-md-6">
                 <input id="nameInput" oninput="inputsValidation()" type="text" class="form-control"
                     placeholder="Enter Your Name">
+                <div id="nameAlert" class="alert alert-danger w-100 mt-2 d-none">Special characters and numbers not allowed</div>
+            </div>
+            <div class="col-md-6">
+                <input id="emailInput" oninput="inputsValidation()" type="text" class="form-control"
+                    placeholder="Enter Your Email">
+                <div id="emailAlert" class="alert alert-danger w-100 mt-2 d-none">Email not valid *exemple@yyy.zzz</div>
+            </div>
+            <div class="col-md-6">
+                <input id="phoneInput" oninput="inputsValidation()" type="text" class="form-control"
+                    placeholder="Enter Your Phone">
+                <div id="phoneAlert" class="alert alert-danger w-100 mt-2 d-none">Enter valid Phone Number</div>
+            </div>
+            <div class="col-md-6">
+                <input id="ageInput" oninput="inputsValidation()" type="text" class="form-control"
+                    placeholder="Enter Your Age">
+                <div id="ageAlert" class="alert alert-danger w-100 mt-2 d-none">Enter valid Age</div>
+            </div>
+            <div class="col-md-6">
+                <input id="passwordInput" oninput="inputsValidation()" type="text" class="form-control"
+                    placeholder="Enter Your Password">
+                <div id="passwordAlert" class="alert alert-danger w-100 mt-2 d-none"> Enter valid password *Minimum eight characters, at least one letter and one number:*</div>
+            </div>
+            <div class="col-md-6">
+                <input id="repasswordInput" oninput="inputsValidation()" type="text" class="form-control"
+                    placeholder="Enter Your rePassword">
+                <div id="repasswordAlert" class="alert alert-danger w-100 mt-2 d-none">Enter valid repassword</div>
             </div>
         </div>
+      <button id="submitBtn" disabled class="btn btn-outline-danger px-2 mt-2">Submit</button>
     </div>
 </div>
   `;
+
+  submitBtn = document.getElementById("submitBtn");
+
+  document.getElementById("nameInput").addEventListener("focus", () => {
+    nameInputTouched = true;
+  });
+  document.getElementById("emailInput").addEventListener("focus", () => {
+    emailInputTouched = true;
+  });
+  document.getElementById("phoneInput").addEventListener("focus", () => {
+    phoneInputTouched = true;
+  });
+  document.getElementById("ageInput").addEventListener("focus", () => {
+    ageInputTouched = true;
+  });
+  document.getElementById("passwordInput").addEventListener("focus", () => {
+    passwordInputTouched = true;
+  });
+  document.getElementById("repasswordInput").addEventListener("focus", () => {
+    repasswordInputTouched = true;
+  });
+}
+
+let nameInputTouched = false;
+let emailInputTouched = false;
+let phoneInputTouched = false;
+let ageInputTouched = false;
+let passwordInputTouched = false;
+let repasswordInputTouched = false;
+
+function inputsValidation() {
+  if (nameInputTouched) {
+    if (isVailName()) {
+      document
+        .getElementById("nameAlert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("nameAlert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (emailInputTouched) {
+    if (isVaildEmail()) {
+      document
+        .getElementById("emailAlert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("emailAlert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (phoneInputTouched) {
+    if (isVaildEmail()) {
+      document
+        .getElementById("phoneAlert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("phoneAlert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (ageInputTouched) {
+    if (isVaildAge()) {
+      document
+        .getElementById("ageAlert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("ageAlert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (passwordInputTouched) {
+    if (isStrongPassword()) {
+      document
+        .getElementById("passwordAlert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("passwordAlert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+  if (repasswordInputTouched) {
+    if (isStrongRepassword()) {
+      document
+        .getElementById("repasswordAlert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("repasswordAlert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+}
+
+if (
+  isVailName() &&
+  isVaildEmail() &&
+  isVaildPhone() &&
+  isVaildAge() &&
+  isStrongPassword() &&
+  isStrongRepassword()
+) {
+  submitBtn.removeAttribute("disabled");
+} else {
+  submitBtn.setAttribute("disabled", true);
+}
+
+// validation
+function isVailName() {
+  var nameRegex = /^[a-zA-Z\s]+$/;
+  return nameRegex.test(document.getElementById("nameInput").value);
+}
+
+function isVaildEmail() {
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(document.getElementById("emailInput").value);
+}
+
+function isVaildPhone() {
+  var phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  return phoneRegex.test(document.getElementById("phoneInput").value);
+}
+
+function isVaildAge() {
+  var ageRegex = /^(0?[1-9]|[1-9][0-9]|[1][1-9][1-9]|200)$/;
+  return ageRegex.test(document.getElementById("ageInput").value);
+}
+
+function isStrongPassword() {
+  var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  return passwordRegex.test(document.getElementById("passwordInput").value);
+}
+
+function isStrongRepassword() {
+  return (
+    document.getElementById("repasswordInput").value ==
+    document.getElementById("passwordInput").value
+  );
 }
