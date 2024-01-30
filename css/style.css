@@ -1,12 +1,17 @@
 body {
   background-color: #0d0d0d;
   color: #f9f6f6 !important;
-  /* overflow: hidden; */
 }
 
 .loading-screen {
-  display: none !important;
-  z-index: 999;
+  display: flex;
+  z-index: 1000;
+}
+.inner-loading-screen {
+  display: flex;
+  background-color: #0d0d0d;
+  position: absolute;
+  z-index: 10;
 }
 
 .logo {
@@ -19,11 +24,11 @@ body {
 
 .nav-tab {
   background-color: #0d0d0d;
-  /* width: 60%; */
 }
 
 .side-nav-menu {
   left: -328px;
+  z-index: 999;
 }
 
 .meal-layer {
@@ -39,11 +44,4 @@ body {
 
 .side-nav-menu {
   z-index: 999;
-}
-
-.inner-loading-screen {
-  position: absolute;
-  z-index: 10;
-  background-color: #0d0d0d;
-  display: flex;
 }

@@ -1,4 +1,12 @@
 // Nav Menu
+
+$(document).ready(() => {
+  searchByName("").then(() => {
+    $(".loading-screen").fadeOut(500);
+    $("body").css("visible");
+  });
+});
+
 $(".open-close-menu").click(() => {
   if ($(".side-nav-menu").css("left") == "0px") {
     closeSideNav();
@@ -8,6 +16,7 @@ $(".open-close-menu").click(() => {
 });
 
 function closeSideNav() {
+  let boxWidth = $(".side-nav-menu").outerWidth();
   $(".side-nav-menu").animate(
     {
       left: "-328px",
@@ -58,6 +67,7 @@ async function getAllMeal() {
   );
   let data = await response.json();
   displayMeals(data.meals);
+  $(".inner-loading-screen").fadeOut(300);
 }
 
 function displayMeals(data) {
@@ -80,12 +90,14 @@ function displayMeals(data) {
 async function getMealsDetails(mealId) {
   rowData.innerHTML = "";
   searchContainer.innerHTML = "";
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`
   );
   let data = await response.json();
 
   displayMealsDetails(data.meals);
+  $(".inner-loading-screen").fadeOut(300);
 }
 
 function displayMealsDetails(mealDetails) {
@@ -173,31 +185,38 @@ function showSearchInputes() {
 async function searchByName(term) {
   closeSideNav();
   rowData.innerHTML = "";
-  // searchContainer.innerHTML = "";
+  $(".inner-loading-screen").fadeIn(300);
+  term == "" ? (term = "a") : "";
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/search.php?f=${term}`
   );
   let data = await response.json();
   data.meals ? displayMeals(data.meals) : displayMeals([]);
+  $(".inner-loading-screen").fadeOut(300);
 }
 async function searchByLetter(term) {
   closeSideNav();
   rowData.innerHTML = "";
+  $(".inner-loading-screen").fadeIn(300);
+  term == "" ? (term = "a") : "";
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/search.php?f=${term}`
   );
   let data = await response.json();
   data.meals ? displayMeals(data.meals) : displayMeals([]);
+  $(".inner-loading-screen").fadeOut(300);
 }
 /*----------------------------------------------------------------------*/
 // Category Menu
 async function getCategories() {
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/categories.php`
   );
   let data = await response.json();
 
   displayCategories(data.categories);
+  $(".inner-loading-screen").fadeOut(300);
   closeSideNav();
 }
 
@@ -226,13 +245,14 @@ function displayCategories(data) {
 
 async function getCategoriesMeals(category) {
   rowData.innerHTML = "";
-
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
   );
   let data = await response.json();
 
   displayMeals(data.meals.slice(0, 20));
+  $(".inner-loading-screen").fadeOut(300);
 }
 
 /*----------------------------------------------------------------------*/
@@ -240,12 +260,12 @@ async function getCategoriesMeals(category) {
 
 async function getArea() {
   rowData.innerHTML = "";
-
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/list.php?a=list`
   );
   let data = await response.json();
-
+  $(".inner-loading-screen").fadeOut(300);
   displayArea(data.meals);
 }
 
@@ -266,25 +286,29 @@ function displayArea(data) {
 }
 
 async function getAreaMeals(area) {
-  console.log(area);
+  rowData.innerHTML = "";
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`
   );
   let data = await response.json();
 
   displayMeals(data.meals.slice(0, 20));
+  $(".inner-loading-screen").fadeOut(300);
 }
 
 /*----------------------------------------------------------------------*/
 // Ingredients Menu
 async function getIngredients() {
   rowData.innerHTML = "";
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/list.php?i=list`
   );
   let data = await response.json();
 
   displayIngredients(data.meals.slice(0, 20));
+  $(".inner-loading-screen").fadeOut(300);
 }
 
 function truncWords(text, maxwords) {
@@ -315,14 +339,18 @@ function displayIngredients(data) {
 
 async function getIngredientsMealsDetails(ingredients) {
   rowData.innerHTML = "";
+  $(".inner-loading-screen").fadeIn(300);
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredients}`
   );
   let data = await response.json();
 
   displayMeals(data.meals.slice(0, 20));
+  $(".inner-loading-screen").fadeOut(300);
 }
 
+/*----------------------------------------------------------------------*/
+// Contacts Area
 function showContacts() {
   closeSideNav();
   rowData.innerHTML = `
@@ -335,7 +363,7 @@ function showContacts() {
                 <div id="nameAlert" class="alert alert-danger w-100 mt-2 d-none">Special characters and numbers not allowed</div>
             </div>
             <div class="col-md-6">
-                <input id="emailInput" oninput="inputsValidation()" type="text" class="form-control"
+                <input id="emailInput" oninput="inputsValidation()" type="email" class="form-control"
                     placeholder="Enter Your Email">
                 <div id="emailAlert" class="alert alert-danger w-100 mt-2 d-none">Email not valid *exemple@yyy.zzz</div>
             </div>
@@ -345,17 +373,17 @@ function showContacts() {
                 <div id="phoneAlert" class="alert alert-danger w-100 mt-2 d-none">Enter valid Phone Number</div>
             </div>
             <div class="col-md-6">
-                <input id="ageInput" oninput="inputsValidation()" type="text" class="form-control"
+                <input id="ageInput" oninput="inputsValidation()" type="number" class="form-control"
                     placeholder="Enter Your Age">
                 <div id="ageAlert" class="alert alert-danger w-100 mt-2 d-none">Enter valid Age</div>
             </div>
             <div class="col-md-6">
-                <input id="passwordInput" oninput="inputsValidation()" type="text" class="form-control"
+                <input id="passwordInput" oninput="inputsValidation()" type="password" class="form-control"
                     placeholder="Enter Your Password">
                 <div id="passwordAlert" class="alert alert-danger w-100 mt-2 d-none"> Enter valid password *Minimum eight characters, at least one letter and one number:*</div>
             </div>
             <div class="col-md-6">
-                <input id="repasswordInput" oninput="inputsValidation()" type="text" class="form-control"
+                <input id="repasswordInput" oninput="inputsValidation()" type="password" class="form-control"
                     placeholder="Enter Your rePassword">
                 <div id="repasswordAlert" class="alert alert-danger w-100 mt-2 d-none">Enter valid repassword</div>
             </div>
@@ -420,7 +448,7 @@ function inputsValidation() {
   }
 
   if (phoneInputTouched) {
-    if (isVaildEmail()) {
+    if (isVaildPhone()) {
       document
         .getElementById("phoneAlert")
         .classList.replace("d-block", "d-none");
@@ -465,19 +493,18 @@ function inputsValidation() {
         .classList.replace("d-none", "d-block");
     }
   }
-}
-
-if (
-  isVailName() &&
-  isVaildEmail() &&
-  isVaildPhone() &&
-  isVaildAge() &&
-  isStrongPassword() &&
-  isStrongRepassword()
-) {
-  submitBtn.removeAttribute("disabled");
-} else {
-  submitBtn.setAttribute("disabled", true);
+  if (
+    isVailName() &&
+    isVaildEmail() &&
+    isVaildPhone() &&
+    isVaildAge() &&
+    isStrongPassword() &&
+    isStrongRepassword()
+  ) {
+    submitBtn.removeAttribute("disabled");
+  } else {
+    submitBtn.setAttribute("disabled", true);
+  }
 }
 
 // validation
@@ -502,7 +529,7 @@ function isVaildAge() {
 }
 
 function isStrongPassword() {
-  var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  var passwordRegex = /^(?=.*\d)(?=.*[a-z])[0-9a-zA-Z]{8,}$/;
   return passwordRegex.test(document.getElementById("passwordInput").value);
 }
 
