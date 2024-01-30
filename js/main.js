@@ -67,6 +67,7 @@ async function getAllMeal() {
   );
   let data = await response.json();
   displayMeals(data.meals);
+  closeSideNav();
   $(".inner-loading-screen").fadeOut(300);
 }
 
